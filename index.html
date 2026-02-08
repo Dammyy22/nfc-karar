@@ -9,14 +9,14 @@
 
   <style>
     :root{
-      /* 🌙 Sabit dark tema (gece mavisi) */
       --bg1:#07111f;
       --bg2:#0b1a33;
-      --card:rgba(12, 25, 46, 0.72);
+      --card:rgba(12, 25, 46, 0.74);
       --text:#eef3fb;
       --muted:rgba(238,243,251,0.55);
       --shadow:rgba(0,0,0,0.55);
       --border:rgba(255,255,255,0.08);
+      --glow:rgba(140, 180, 255, 0.18);
     }
 
     body{
@@ -27,34 +27,55 @@
       justify-content:center;
       padding: 18px;
 
-      background: radial-gradient(1200px 700px at 20% 10%, #0f2a5a 0%, transparent 55%),
-                  radial-gradient(900px 600px at 85% 20%, #132a52 0%, transparent 60%),
-                  linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
-
-      font-family: 'Cormorant Garamond', serif;
+      /* Gece mavisi + yıldız hissi */
+      background:
+        radial-gradient(1200px 700px at 20% 10%, #0f2a5a 0%, transparent 55%),
+        radial-gradient(900px 600px at 85% 20%, #132a52 0%, transparent 60%),
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
+      font-family: 'Cormorant+Garamond', serif;
       color: var(--text);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ⭐ ultra-hafif yıldız/noise katmanı */
+    body::after{
+      content:"";
+      position:absolute; inset:0;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,.25) 50%, transparent 51%),
+        radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,.18) 50%, transparent 51%),
+        radial-gradient(1px 1px at 60% 40%, rgba(255,255,255,.22) 50%, transparent 51%),
+        radial-gradient(1px 1px at 85% 65%, rgba(255,255,255,.2) 50%, transparent 51%),
+        radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,.15) 50%, transparent 51%);
+      opacity:.35;
+      pointer-events:none;
     }
 
     .wrap{
       max-width: 760px;
       width: 100%;
       padding: 32px;
-
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 18px;
-      box-shadow: 0 14px 40px var(--shadow);
+
+      /* 🌙 Ay ışığı parıltısı */
+      box-shadow:
+        0 14px 40px var(--shadow),
+        0 0 0 1px rgba(255,255,255,0.02),
+        0 0 28px var(--glow);
 
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
+      animation: fadeIn 520ms ease-out;
     }
 
     .msg{
-      font-size: 20px;
+      font-size: 20px;        /* JS ile akıllı küçültülecek */
       line-height: 1.75;
       white-space: pre-line;
       letter-spacing: 0.2px;
-      animation: fadeIn 420ms ease-out;
     }
 
     .date{
@@ -65,7 +86,7 @@
     }
 
     @keyframes fadeIn{
-      from { opacity: 0; transform: translateY(6px); }
+      from { opacity: 0; transform: translateY(8px); }
       to   { opacity: 1; transform: translateY(0); }
     }
   </style>
@@ -151,7 +172,7 @@ Buhârî, Edeb 19 | Müslim, Tevbe 22
 (Sahih Hadis)`
 ];
 
-// İstanbul saatine göre "günün anahtarı"
+// İstanbul saatine göre gün anahtarı
 function istanbulKey(){
   const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Istanbul" }));
   const y = now.getFullYear();
@@ -160,7 +181,7 @@ function istanbulKey(){
   return `${y}-${m}-${d}`;
 }
 
-// deterministik seçim: aynı gün aynı mesaj
+// Aynı gün aynı mesaj
 function pickIndexFromKey(key, len){
   let hash = 0;
   for (let i=0; i<key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
@@ -169,9 +190,14 @@ function pickIndexFromKey(key, len){
 
 const key = istanbulKey();
 const idx = pickIndexFromKey(key, messages.length);
-
-document.getElementById("msg").textContent = messages[idx];
+const msgEl = document.getElementById("msg");
+msgEl.textContent = messages[idx];
 document.getElementById("date").textContent = `Günün mesajı • ${key}`;
+
+// 🧠 Akıllı font: metin uzunsa biraz küçült
+const len = messages[idx].length;
+if (len > 700) msgEl.style.fontSize = "18px";
+if (len > 1000) msgEl.style.fontSize = "17px";
 </script>
 
 </body>
