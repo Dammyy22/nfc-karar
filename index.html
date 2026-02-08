@@ -16,7 +16,7 @@
       --muted:rgba(238,243,251,0.55);
       --shadow:rgba(0,0,0,0.55);
       --border:rgba(255,255,255,0.08);
-      --glow:rgba(140, 180, 255, 0.18);
+      --glow:rgba(140,180,255,0.18);
     }
 
     body{
@@ -25,23 +25,22 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding: 18px;
-
-      /* Gece mavisi + yıldız hissi */
+      padding:18px;
+      font-family:'Cormorant Garamond', serif;
+      color:var(--text);
       background:
         radial-gradient(1200px 700px at 20% 10%, #0f2a5a 0%, transparent 55%),
         radial-gradient(900px 600px at 85% 20%, #132a52 0%, transparent 60%),
         linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
-      font-family: 'Cormorant+Garamond', serif;
-      color: var(--text);
-      position: relative;
-      overflow: hidden;
+      position:relative;
+      overflow:hidden;
     }
 
-    /* ⭐ ultra-hafif yıldız/noise katmanı */
+    /* ⭐ Yıldız / noise */
     body::after{
       content:"";
-      position:absolute; inset:0;
+      position:absolute;
+      inset:0;
       background-image:
         radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,.25) 50%, transparent 51%),
         radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,.18) 50%, transparent 51%),
@@ -50,44 +49,57 @@
         radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,.15) 50%, transparent 51%);
       opacity:.35;
       pointer-events:none;
+      z-index:1;
+    }
+
+    /* 🌙 CUMA ARKA PLAN GÖRSELİ */
+    body.friday::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background-image:url("assets/friday-bg.png");
+      background-size:cover;
+      background-position:center;
+      opacity:0.22;
+      filter:blur(2px);
+      pointer-events:none;
+      z-index:0;
     }
 
     .wrap{
-      max-width: 760px;
-      width: 100%;
-      padding: 32px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-
-      /* 🌙 Ay ışığı parıltısı */
+      position:relative;
+      z-index:2;
+      max-width:760px;
+      width:100%;
+      padding:32px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
       box-shadow:
         0 14px 40px var(--shadow),
-        0 0 0 1px rgba(255,255,255,0.02),
         0 0 28px var(--glow);
-
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      animation: fadeIn 520ms ease-out;
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      animation:fadeIn .5s ease-out;
     }
 
     .msg{
-      font-size: 20px;        /* JS ile akıllı küçültülecek */
-      line-height: 1.75;
-      white-space: pre-line;
-      letter-spacing: 0.2px;
+      font-size:20px;
+      line-height:1.75;
+      white-space:pre-line;
+      letter-spacing:.2px;
     }
 
     .date{
-      margin-top: 14px;
-      font-size: 13px;
-      color: var(--muted);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin-top:14px;
+      font-size:13px;
+      color:var(--muted);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
 
     @keyframes fadeIn{
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from{opacity:0; transform:translateY(8px);}
+      to{opacity:1; transform:translateY(0);}
     }
   </style>
 </head>
@@ -172,20 +184,23 @@ Buhârî, Edeb 19 | Müslim, Tevbe 22
 (Sahih Hadis)`
 ];
 
-// İstanbul saatine göre gün anahtarı
+// İstanbul saati
+function istanbulNow(){
+  return new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Istanbul"}));
+}
 function istanbulKey(){
-  const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Istanbul" }));
-  const y = now.getFullYear();
-  const m = String(now.getMonth()+1).padStart(2,'0');
-  const d = String(now.getDate()).padStart(2,'0');
-  return `${y}-${m}-${d}`;
+  const n=istanbulNow();
+  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
+}
+function pickIndexFromKey(key,len){
+  let h=0;
+  for(let i=0;i<key.length;i++) h=(h*31+key.charCodeAt(i))>>>0;
+  return h%len;
 }
 
-// Aynı gün aynı mesaj
-function pickIndexFromKey(key, len){
-  let hash = 0;
-  for (let i=0; i<key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
-  return hash % len;
+const nowTR = istanbulNow();
+if(nowTR.getDay()===5){ // CUMA
+  document.body.classList.add("friday");
 }
 
 const key = istanbulKey();
@@ -194,10 +209,10 @@ const msgEl = document.getElementById("msg");
 msgEl.textContent = messages[idx];
 document.getElementById("date").textContent = `Günün mesajı • ${key}`;
 
-// 🧠 Akıllı font: metin uzunsa biraz küçült
-const len = messages[idx].length;
-if (len > 700) msgEl.style.fontSize = "18px";
-if (len > 1000) msgEl.style.fontSize = "17px";
+// Uzun metin için akıllı font
+const L = messages[idx].length;
+if(L>700) msgEl.style.fontSize="18px";
+if(L>1000) msgEl.style.fontSize="17px";
 </script>
 
 </body>
