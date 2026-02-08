@@ -4,40 +4,74 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Bir Mesaj</title>
+
+  <!-- Font: manevi, sakin -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
 
-
   <style>
-    body {
-       background-color: #f6f3ee;
-      background-image: radial-gradient(#e6e1d9 1px, transparent 1px);
-      background-size: 24px 24px;
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    :root{
+      --bg1:#f7f5f2;
+      --bg2:#efece7;
+      --card:rgba(255,255,255,0.72);
+      --text:#1a1a1a;
+      --shadow:rgba(0,0,0,0.06);
+      --muted:rgba(0,0,0,0.45);
+    }
+
+    /* 🌙 Gece modu: cihazın dark mode ayarına göre otomatik */
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg1:#0b0f14;
+        --bg2:#121924;
+        --card:rgba(18,25,36,0.72);
+        --text:#e9edf3;
+        --shadow:rgba(0,0,0,0.45);
+        --muted:rgba(255,255,255,0.45);
+      }
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
       font-family: 'Cormorant Garamond', serif;
-      
-      
-      color: #111;
+      color: var(--text);
+      padding: 18px;
     }
 
-    .wrap {
-      
-      max-width: 720px;
-      text-align: left;
-      background: rgba(255,255,255,0.65);
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-      padding: 32px
+    .wrap{
+      max-width: 760px;
+      width: 100%;
+      padding: 32px;
+      background: var(--card);
+      border-radius: 18px;
+      box-shadow: 0 12px 34px var(--shadow);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
     }
 
-    .msg {
+    .msg{
       font-size: 20px;
-      line-height: 1.6;
+      line-height: 1.75;
       white-space: pre-line;
-      
+      letter-spacing: 0.2px;
+      animation: fadeIn 420ms ease-out;
+    }
+
+    .date{
+      margin-top: 14px;
+      font-size: 13px;
+      opacity: 0.7;
+      color: var(--muted);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    @keyframes fadeIn{
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -45,11 +79,11 @@
 <body>
   <div class="wrap">
     <div class="msg" id="msg">Yükleniyor…</div>
+    <div class="date" id="date"></div>
   </div>
 
 <script>
 const messages = [
-
 `Her şeyi kontrol etmeye çalışma.
 Güven, bazen bırakabilmektir.
 
@@ -84,6 +118,7 @@ bir kolaylık vardır.”
 
 `Bazen yavaşlamak,
 Allah’ın seni koruma biçimidir.
+
 Her gecikme kayıp değildir.
 
 “Olur ki bir şey hoşuna gitmez;
@@ -109,7 +144,9 @@ Tirmizî, Zühd 57
 (Hasen–Sahih kabul edilmiştir)`,
 
 `Sevildiğini hissettiğin anlar,
-tesadüf değildir.Allah bazen sevgiyi
+tesadüf değildir.
+
+Allah bazen sevgiyi
 insanlar aracılığıyla hissettirir.
 
 “Allah, kullarına annesinin
@@ -119,9 +156,27 @@ Buhârî, Edeb 19 | Müslim, Tevbe 22
 (Sahih Hadis)`
 ];
 
-// HER OKUTUŞTA FARKLI MESAJ
-const idx = Math.floor(Math.random() * messages.length);
+// ✅ İstanbul saatine göre "günün anahtarı"
+function istanbulKey(){
+  const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Istanbul" }));
+  const y = now.getFullYear();
+  const m = String(now.getMonth()+1).padStart(2,'0');
+  const d = String(now.getDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+
+// ✅ deterministik seçim: aynı gün aynı mesaj
+function pickIndexFromKey(key, len){
+  let hash = 0;
+  for (let i=0; i<key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
+  return hash % len;
+}
+
+const key = istanbulKey();
+const idx = pickIndexFromKey(key, messages.length);
+
 document.getElementById("msg").textContent = messages[idx];
+document.getElementById("date").textContent = `Günün mesajı • ${key}`;
 </script>
 
 </body>
