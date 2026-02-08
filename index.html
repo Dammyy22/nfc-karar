@@ -3,50 +3,118 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Karar</title>
+  <title>Bir Mesaj</title>
+
   <style>
-    body { margin:0; display:flex; min-height:100vh; align-items:center; justify-content:center; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; }
-    .wrap { padding: 28px; text-align:center; max-width: 680px; }
-    .msg { font-size: 28px; line-height: 1.25; }
-    .sub { margin-top: 14px; opacity: .6; font-size: 14px; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: #fafafa;
+      color: #111;
+    }
+
+    .wrap {
+      padding: 28px;
+      max-width: 720px;
+      text-align: left;
+    }
+
+    .msg {
+      font-size: 20px;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="msg" id="msg">Yükleniyor…</div>
-    <div class="sub" id="sub"></div>
   </div>
 
 <script>
-  // 1) Buraya cümlelerini yaz
-  const messages = [
-    "Bugün yavaşla.",
-    "Bugün net ol.",
-    "Bugün acele etme.",
-    "Bugün sus ve izle.",
-    "Bugün konuş, kısa konuş.",
-    "Bugün bir şeyi bırak.",
-    "Bugün kendine iyi davran.",
-    "Bugün erteleme.",
-    "Bugün küçük bir şey düzelt.",
-    "Bugün gereksiz tartışma yok."
-  ];
+const messages = [
 
-  // 2) Aynı gün aynı cümle gelsin istiyorsan (karar = karar)
-  // Türkiye saatiyle gün bazlı seçim:
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = String(now.getMonth()+1).padStart(2,'0');
-  const d = String(now.getDate()).padStart(2,'0');
-  const key = `${y}-${m}-${d}`;
+`Her şeyi kontrol etmeye çalışma.
+Güven, bazen bırakabilmektir.
 
-  // basit deterministik seçim
-  let hash = 0;
-  for (let i=0; i<key.length; i++) hash = (hash*31 + key.charCodeAt(i)) >>> 0;
-  const idx = hash % messages.length;
+Bugün bir şeyler ağır geliyorsa,
+hepsini taşımak zorunda değilsin.`,
 
-  document.getElementById("msg").textContent = messages[idx];
-  document.getElementById("sub").textContent = key;
+`Bazen yolun zorlaşması,
+yanlış yolda olduğun anlamına gelmez.
+
+Allah, kulunu çoğu zaman
+taşıyabileceği kadar yükler.
+
+“Allah hiçbir nefse gücünün yetmeyeceği
+yükü yüklemez.”
+Bakara Suresi, 286. Ayet`,
+
+`Şu an her şey dağınık hissediyorsa,
+bil ki düzen kurulma aşamasındadır.
+
+Sabır, vazgeçmek değil;
+güvenerek beklemektir.
+
+“Şüphesiz Allah sabredenlerle beraberdir.”
+Bakara Suresi, 153. Ayet`,
+
+`Kalbin daraldığında bu bir terk ediliş değildir.
+Zorluk, ferahlığın habercisidir.
+
+“Şüphesiz zorlukla beraber
+bir kolaylık vardır.”
+İnşirah Suresi, 6. Ayet`,
+
+`Bazen yavaşlamak,
+Allah’ın seni koruma biçimidir.
+
+Her gecikme kayıp değildir.
+
+“Olur ki bir şey hoşuna gitmez;
+halbuki o senin için hayırlıdır.”
+Bakara Suresi, 216. Ayet`,
+
+`Başına gelen her şey seni küçültmek için değil,
+olgunlaştırmak içindir.
+
+“Müminin başına gelen yorgunluk,
+hastalık, keder, üzüntü hatta ayağına
+batan diken bile Allah’ın izniyle
+günahlarına kefaret olur.”
+Buhârî, Merdâ 1 | Müslim, Birr 52
+(Sahih Hadis)`,
+
+`Bugün güçlü olmak zorunda değilsin.
+Dayanman bile yeterli.
+
+“Allah bir kulunu sevdiği zaman
+onu imtihan eder.”
+Tirmizî, Zühd 57
+(Hasen–Sahih kabul edilmiştir)`,
+
+`Sevildiğini hissettiğin anlar,
+tesadüf değildir.
+
+Allah bazen sevgiyi
+insanlar aracılığıyla hissettirir.
+
+“Allah, kullarına annesinin
+çocuğuna merhametinden
+daha merhametlidir.”
+Buhârî, Edeb 19 | Müslim, Tevbe 22
+(Sahih Hadis)`
+];
+
+// HER OKUTUŞTA FARKLI MESAJ
+const idx = Math.floor(Math.random() * messages.length);
+document.getElementById("msg").textContent = messages[idx];
 </script>
+
 </body>
 </html>
