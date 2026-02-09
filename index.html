@@ -9,6 +9,7 @@
 
   <style>
     :root{
+      /* GECE varsayılan */
       --bg1:#07111f;
       --bg2:#0b1a33;
       --card:rgba(12, 25, 46, 0.74);
@@ -36,7 +37,7 @@
       overflow:hidden;
     }
 
-    /* ⭐ Yıldız / noise */
+    /* ⭐ yıldız/noise */
     body::after{
       content:"";
       position:absolute;
@@ -111,6 +112,30 @@
   </div>
 
 <script>
+/* ---------- ZAMAN ---------- */
+function istanbulNow(){
+  return new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Istanbul"}));
+}
+function istanbulKey(){
+  const n=istanbulNow();
+  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
+}
+
+/* ---------- SAAT BAZLI TEMA ---------- */
+const hour = istanbulNow().getHours();
+// 06–18 gündüz (bir tık daha açık)
+if(hour >= 6 && hour < 19){
+  document.documentElement.style.setProperty('--bg1','#0b1a33');
+  document.documentElement.style.setProperty('--bg2','#12264d');
+  document.documentElement.style.setProperty('--card','rgba(18,32,64,0.65)');
+}
+
+/* ---------- CUMA ARKA PLAN ---------- */
+if(istanbulNow().getDay() === 5){
+  document.body.classList.add("friday");
+}
+
+/* ---------- MESAJLAR ---------- */
 const messages = [
 `Her şeyi kontrol etmeye çalışma.
 Güven, bazen bırakabilmektir.
@@ -184,35 +209,23 @@ Buhârî, Edeb 19 | Müslim, Tevbe 22
 (Sahih Hadis)`
 ];
 
-// İstanbul saati
-function istanbulNow(){
-  return new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Istanbul"}));
-}
-function istanbulKey(){
-  const n=istanbulNow();
-  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
-}
+/* ---------- GÜNLÜK SABİT SEÇİM ---------- */
 function pickIndexFromKey(key,len){
   let h=0;
   for(let i=0;i<key.length;i++) h=(h*31+key.charCodeAt(i))>>>0;
   return h%len;
 }
 
-const nowTR = istanbulNow();
-if(nowTR.getDay()===5){ // CUMA
-  document.body.classList.add("friday");
-}
-
 const key = istanbulKey();
 const idx = pickIndexFromKey(key, messages.length);
+
 const msgEl = document.getElementById("msg");
 msgEl.textContent = messages[idx];
 document.getElementById("date").textContent = `Günün mesajı • ${key}`;
 
-// Uzun metin için akıllı font
-const L = messages[idx].length;
-if(L>700) msgEl.style.fontSize="18px";
-if(L>1000) msgEl.style.fontSize="17px";
+// uzun metin için font küçült
+if(messages[idx].length > 700) msgEl.style.fontSize="18px";
+if(messages[idx].length > 1000) msgEl.style.fontSize="17px";
 </script>
 
 </body>
