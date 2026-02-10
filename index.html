@@ -9,7 +9,7 @@
 
   <style>
     :root{
-      /* GECE varsayılan */
+      /* 🌙 GECE (varsayılan) */
       --bg1:#07111f;
       --bg2:#0b1a33;
       --card:rgba(12, 25, 46, 0.74);
@@ -18,6 +18,18 @@
       --shadow:rgba(0,0,0,0.55);
       --border:rgba(255,255,255,0.08);
       --glow:rgba(140,180,255,0.18);
+    }
+
+    /* 🌤 GÜNDÜZ PALETİ */
+    body.day{
+      --bg1:#e9eef6;
+      --bg2:#dbe4f2;
+      --card:rgba(255,255,255,0.9);
+      --text:#0f1a2b;
+      --muted:rgba(15,26,43,0.55);
+      --shadow:rgba(0,0,0,0.12);
+      --border:rgba(0,0,0,0.08);
+      --glow:rgba(120,150,200,0.25);
     }
 
     body{
@@ -37,7 +49,7 @@
       overflow:hidden;
     }
 
-    /* ⭐ yıldız/noise */
+    /* ⭐ yıldız / noise */
     body::after{
       content:"";
       position:absolute;
@@ -53,7 +65,7 @@
       z-index:1;
     }
 
-    /* 🌙 CUMA ARKA PLAN GÖRSELİ */
+    /* 📿 CUMA ARKA PLAN DOKUSU */
     body.friday::before{
       content:"";
       position:fixed;
@@ -112,25 +124,22 @@
   </div>
 
 <script>
-/* ---------- ZAMAN ---------- */
+/* ---------- ZAMAN (İSTANBUL) ---------- */
 function istanbulNow(){
   return new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Istanbul"}));
 }
 function istanbulKey(){
-  const n=istanbulNow();
+  const n = istanbulNow();
   return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
 }
 
 /* ---------- SAAT BAZLI TEMA ---------- */
 const hour = istanbulNow().getHours();
-// 06–18 gündüz (bir tık daha açık)
 if(hour >= 6 && hour < 19){
-  document.documentElement.style.setProperty('--bg1','#0b1a33');
-  document.documentElement.style.setProperty('--bg2','#12264d');
-  document.documentElement.style.setProperty('--card','rgba(18,32,64,0.65)');
+  document.body.classList.add("day");
 }
 
-/* ---------- CUMA ARKA PLAN ---------- */
+/* ---------- CUMA DOKUSU ---------- */
 if(istanbulNow().getDay() === 5){
   document.body.classList.add("friday");
 }
@@ -209,7 +218,7 @@ Buhârî, Edeb 19 | Müslim, Tevbe 22
 (Sahih Hadis)`
 ];
 
-/* ---------- GÜNLÜK SABİT SEÇİM ---------- */
+/* ---------- GÜNLÜK SABİT MESAJ ---------- */
 function pickIndexFromKey(key,len){
   let h=0;
   for(let i=0;i<key.length;i++) h=(h*31+key.charCodeAt(i))>>>0;
@@ -223,7 +232,7 @@ const msgEl = document.getElementById("msg");
 msgEl.textContent = messages[idx];
 document.getElementById("date").textContent = `Günün mesajı • ${key}`;
 
-// uzun metin için font küçült
+// uzun metinlerde fontu biraz küçült
 if(messages[idx].length > 700) msgEl.style.fontSize="18px";
 if(messages[idx].length > 1000) msgEl.style.fontSize="17px";
 </script>
