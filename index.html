@@ -119,7 +119,7 @@
 
 <body>
   <div class="wrap">
-    
+    <div class="msg" id="msg">Yükleniyor…</div>
     <div class="date" id="date"></div>
   </div>
 
@@ -144,15 +144,17 @@ if(istanbulNow().getDay() === 5){
   document.body.classList.add("friday");
 }
 
-/* ---------- MESAJLAR ---------- */
+/* ---------- MESAJLAR (DÜZGÜN AYRILDI) ---------- */
 const messages = [
 `Her şeyi kontrol etmeye çalışma.
 Güven, bazen bırakabilmektir.
+
 Bugün bir şeyler ağır geliyorsa,
 hepsini taşımak zorunda değilsin.`,
 
 `Bazen yolun zorlaşması,
 yanlış yolda olduğun anlamına gelmez.
+
 Allah, kulunu çoğu zaman
 taşıyabileceği kadar yükler.
 
@@ -206,70 +208,83 @@ Tirmizî, Zühd 57
 `Sevildiğini hissettiğin anlar,
 tesadüf değildir.
 
-Allah bazen sevgiyi
-insanlar aracılığıyla hissettirir.
+Allah bazen sevgiyi insanlar aracılığıyla hissettirir.
 
-“Allah, kullarına annesinin
-çocuğuna merhametinden
+“Allah, kullarına annesinin çocuğuna merhametinden
 daha merhametlidir.”
-Buhârî, Edeb 19 | Müslim, Tevbe 22 ,
-Sabretmek öylece durup beklemek değil, ileri görüşlü olmak demektir. 
-Sabır nedir? Dikene bakıp gülü, geceye bakıp gündüzü tahayyül edebilmektir. 
-Allah âşıkları sabrı gülbeşeker gibi tatlı tatlı emer, hazmeder. 
-Ve bilirler ki, gökteki ayın hilalden dolunaya varması için zaman gerekir.,
+Buhârî, Edeb 19 | Müslim, Tevbe 22
+(Sahih Hadis)`,
 
-İman, yetmiş küsur derecedir. En üstünü "Lâ ilâhe illallah (Allah'tan başka ilah yoktur)" sözüdür, 
-en düşük derecesi de rahatsız edici bir şeyi yoldan kaldırmaktır. Haya da imandandır.,
+`Sabretmek öylece durup beklemek değil, ileri görüşlü olmak demektir.
+Sabır nedir? Dikene bakıp gülü, geceye bakıp gündüzü tahayyül edebilmektir.
+Allah âşıkları sabrı gülbeşeker gibi tatlı tatlı emer, hazmeder.
+Ve bilirler ki, gökteki ayın hilalden dolunaya varması için zaman gerekir.`,
 
-Hakk’ı bulursan eşyayı ondan görürsün. Ne düşmanın kalır, ne üzerinde hakkın olan biri.,
+`İman, yetmiş küsur derecedir.
+En üstünü “Lâ ilâhe illallah (Allah'tan başka ilah yoktur)” sözüdür,
+en düşük derecesi de rahatsız edici bir şeyi yoldan kaldırmaktır.
+Haya da imandandır.
 
-Nasibin olanı kaybetmezsin, onu senden başkası yiyemez. O başkasının nasibi olmaz. Nasibini ona hırs göstermekle elde edemezsin.,
+— Hadis`,
 
-Başına ne gelirse gelsin, karamsarlığa kapılma.
-Bütün kapılar kapansa bile, sonunda o sana kimsenin bilmediği gizli bir patika açar. 
-Sen şu anda göremesen de, dar geçitler ardında nice cennet bahçeleri var. 
-Şükret! İstediğini elde edince şükretmek kolaydır. 
-Sufi, dileği gerçekleşmediğinde de şükredendir.,
+`Hakk’ı bulursan eşyayı ondan görürsün.
+Ne düşmanın kalır, ne üzerinde hakkın olan biri.`,
 
-Duan her zaman duyulur ama ihtiyacın kadar verilir. 
-Sonrası öteki aleme kalır. 
-İhtimal ki her arzunun bu alemde yerine gelmeyişi bir hikmet icabı ve senin hayrına olmaktadır. 
+`Nasibin olanı kaybetmezsin, onu senden başkası yiyemez.
+O başkasının nasibi olmaz.
+Nasibini ona hırs göstermekle elde edemezsin.`,
+
+`Başına ne gelirse gelsin, karamsarlığa kapılma.
+Bütün kapılar kapansa bile, sonunda o sana kimsenin bilmediği gizli bir patika açar.
+Sen şu anda göremesen de, dar geçitler ardında nice cennet bahçeleri var.
+Şükret!
+İstediğini elde edince şükretmek kolaydır.
+Sufi, dileği gerçekleşmediğinde de şükredendir.
+
+— Şems-i Tebrizî (atfedilen)`,
+
+`Duan her zaman duyulur ama ihtiyacın kadar verilir.
+Sonrası öteki aleme kalır.
+İhtimal ki her arzunun bu alemde yerine gelmeyişi bir hikmet icabı ve senin hayrına olmaktadır.
 Sonra, her olan şey, Allah'ın kaza ve kaderine uygundur.
-Abdulkadir Geylani ,
 
-Kalbin karardığında,
+— Abdulkadir Geylani`,
+
+`Kalbin karardığında,
 onu suçlama.
-Belki de temizlenme sürecindedir. ,
+Belki de temizlenme sürecindedir.`,
 
-Her gecikme kayıp değildir.
-Bazı kapılar seni korumak için kapalıdır.,
+`Her gecikme kayıp değildir.
+Bazı kapılar seni korumak için kapalıdır.`,
 
-Huzur, şartların düzelmesi değil;
-içinin sakinleşmesidir.,
+`Huzur, şartların düzelmesi değil;
+içinin sakinleşmesidir.`,
 
-“Kalbin kararması,
+`“Kalbin kararması,
 hakikatten uzaklaşmanın işaretidir.”
-İmam Gazali
-Rahatsızlık bazen uyanıştır.,
 
-“Kalp hasta olduğunda,
+— İmam Gazâlî`,
+
+`“Kalp hasta olduğunda,
 dünya ona büyük görünür.”
-İbn Kayyım el-Cevziyye ,
 
- Bu işin başı Allah’tan başka tanrı olmadığına şehadet etmek, 
- son noktası ise bütün nesneler ve davranışların birbirinin aynı olmasıdır. 
- Abdulkadir Geylani ,
+— İbn Kayyım el-Cevziyye`,
 
-Dert insanı arındırır;
-eğer insan dertten kaçmazsa.”,
+`Bu işin başı Allah’tan başka tanrı olmadığına şehadet etmek,
+son noktası ise bütün nesneler ve davranışların birbirinin aynı olmasıdır.
 
- “Karanlıktan korkma, yıldızlar orada parlar.”
- Karanlık anlar seni durdurmak için değil, içindeki yıldızları keşfetmen için vardır. 
- Kimi zaman en parlak fikirler, en zor anlarda doğar. 
- Kimi zaman en büyük dönüşüm, en derin yalnızlıklarda başlar. 
- Bu yüzden karanlıktan korkma; çünkü yıldızlar sadece orada görünür.
+— Abdulkadir Geylani`,
 
-Bu söz, sana şunu hatırlatır: Umudun en çok gerektiği yerde, en çok parlar. ,
+`Dert insanı arındırır;
+eğer insan dertten kaçmazsa.`,
+
+`“Karanlıktan korkma, yıldızlar orada parlar.”
+Karanlık anlar seni durdurmak için değil, içindeki yıldızları keşfetmen için vardır.
+Kimi zaman en parlak fikirler, en zor anlarda doğar.
+Kimi zaman en büyük dönüşüm, en derin yalnızlıklarda başlar.
+Bu yüzden karanlıktan korkma; çünkü yıldızlar sadece orada görünür.
+
+(Anonim / modern alıntı)`
 ];
 
 /* ---------- GÜNLÜK SABİT MESAJ ---------- */
@@ -284,6 +299,7 @@ const idx = pickIndexFromKey(key, messages.length);
 
 const msgEl = document.getElementById("msg");
 msgEl.textContent = messages[idx];
+
 document.getElementById("date").textContent = `Günün mesajı • ${key}`;
 
 // uzun metinlerde fontu biraz küçült
