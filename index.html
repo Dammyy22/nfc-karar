@@ -1,26 +1,147 @@
-<script>
-/* ---------- ZAMAN (İSTANBUL) ---------- */
-function istanbulNow(){
-  return new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Istanbul"}));
-}
-function istanbulKey(){
-  const n = istanbulNow();
-  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
-}
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bir Mesaj</title>
 
-/* ---------- SAAT BAZLI TEMA ---------- */
-const hour = istanbulNow().getHours();
-if(hour >= 6 && hour < 19){
-  document.body.classList.add("day");
-}
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
 
-/* ---------- CUMA DOKUSU ---------- */
-if(istanbulNow().getDay() === 5){
-  document.body.classList.add("friday");
-}
+  <style>
+    :root{
+      /* 🌙 GECE (varsayılan) */
+      --bg1:#07111f;
+      --bg2:#0b1a33;
+      --card:rgba(12, 25, 46, 0.74);
+      --text:#eef3fb;
+      --muted:rgba(238,243,251,0.55);
+      --shadow:rgba(0,0,0,0.55);
+      --border:rgba(255,255,255,0.08);
+      --glow:rgba(140,180,255,0.18);
+    }
 
-/* ---------- MESAJLAR (DÜZELTİLDİ) ---------- */
-const messages = [
+    /* 🌤 GÜNDÜZ PALETİ */
+    body.day{
+      --bg1:#e9eef6;
+      --bg2:#dbe4f2;
+      --card:rgba(255,255,255,0.9);
+      --text:#0f1a2b;
+      --muted:rgba(15,26,43,0.55);
+      --shadow:rgba(0,0,0,0.12);
+      --border:rgba(0,0,0,0.08);
+      --glow:rgba(120,150,200,0.25);
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      font-family:'Cormorant Garamond', serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 10%, #0f2a5a 0%, transparent 55%),
+        radial-gradient(900px 600px at 85% 20%, #132a52 0%, transparent 60%),
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* ⭐ yıldız / noise */
+    body::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,.25) 50%, transparent 51%),
+        radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,.18) 50%, transparent 51%),
+        radial-gradient(1px 1px at 60% 40%, rgba(255,255,255,.22) 50%, transparent 51%),
+        radial-gradient(1px 1px at 85% 65%, rgba(255,255,255,.2) 50%, transparent 51%),
+        radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,.15) 50%, transparent 51%);
+      opacity:.35;
+      pointer-events:none;
+      z-index:1;
+    }
+
+    /* 📿 CUMA ARKA PLAN DOKUSU */
+    body.friday::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background-image:url("assets/friday-bg.png");
+      background-size:cover;
+      background-position:center;
+      opacity:0.22;
+      filter:blur(2px);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .wrap{
+      position:relative;
+      z-index:2;
+      max-width:760px;
+      width:100%;
+      padding:32px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:
+        0 14px 40px var(--shadow),
+        0 0 28px var(--glow);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      animation:fadeIn .5s ease-out;
+    }
+
+    .msg{
+      font-size:20px;
+      line-height:1.75;
+      white-space:pre-line;
+      letter-spacing:.2px;
+    }
+
+    .date{
+      margin-top:14px;
+      font-size:13px;
+      color:var(--muted);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(8px);}
+      to{opacity:1; transform:translateY(0);}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="msg" id="msg">Yükleniyor…</div>
+    <div class="date" id="date"></div>
+  </div>
+
+  <script>
+  /* ---------- ZAMAN (İSTANBUL) ---------- */
+  function istanbulNow(){
+    return new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Istanbul"}));
+  }
+  function istanbulKey(){
+    const n = istanbulNow();
+    return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
+  }
+
+  /* ---------- GÜNLÜK SABİT MESAJ ---------- */
+  function pickIndexFromKey(key, len){
+    let h = 0;
+    for(let i=0;i<key.length;i++) h = (h*31 + key.charCodeAt(i)) >>> 0;
+    return h % len;
+  }
+
+  /* ---------- MESAJLAR ---------- */
+  const messages = [
 `Her şeyi kontrol etmeye çalışma.
 Güven, bazen bırakabilmektir.
 
@@ -155,23 +276,38 @@ Karanlık anlar seni durdurmak için değil, içindeki yıldızları keşfetmen 
 Kimi zaman en parlak fikirler, en zor anlarda doğar.
 Kimi zaman en büyük dönüşüm, en derin yalnızlıklarda başlar.
 Bu yüzden karanlıktan korkma; çünkü yıldızlar sadece orada görünür.`
-];
+  ];
 
-/* ---------- GÜNLÜK SABİT MESAJ ---------- */
-function pickIndexFromKey(key,len){
-  let h=0;
-  for(let i=0;i<key.length;i++) h=(h*31+key.charCodeAt(i))>>>0;
-  return h%len;
-}
+  // Script patlarsa bile tamamen beyaz kalmasın diye
+  window.addEventListener("error", () => {
+    const el = document.getElementById("msg");
+    if(el) el.textContent = "Bir şeyler bozuldu. Konsola bak.";
+  });
 
-const key = istanbulKey();
-const idx = pickIndexFromKey(key, messages.length);
+  document.addEventListener("DOMContentLoaded", () => {
+    // tema: gündüz/gece
+    const h = istanbulNow().getHours();
+    if(h >= 6 && h < 19) document.body.classList.add("day");
 
-const msgEl = document.getElementById("msg");
-msgEl.textContent = messages[idx];
+    // cuma dokusu
+    if(istanbulNow().getDay() === 5) document.body.classList.add("friday");
 
-document.getElementById("date").textContent = `Günün mesajı • ${key}`;
+    const msgEl = document.getElementById("msg");
+    const dateEl = document.getElementById("date");
+    if(!msgEl || !dateEl){
+      console.error("DOM elemanları bulunamadı:", { msgEl, dateEl });
+      return;
+    }
 
-if(messages[idx].length > 700) msgEl.style.fontSize="18px";
-if(messages[idx].length > 1000) msgEl.style.fontSize="17px";
-</script>
+    const key = istanbulKey();
+    const idx = pickIndexFromKey(key, messages.length);
+
+    msgEl.textContent = messages[idx];
+    dateEl.textContent = `Günün mesajı • ${key}`;
+
+    if(messages[idx].length > 700) msgEl.style.fontSize="18px";
+    if(messages[idx].length > 1000) msgEl.style.fontSize="17px";
+  });
+  </script>
+</body>
+</html>
